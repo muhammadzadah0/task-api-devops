@@ -187,3 +187,28 @@ kubectl apply -f k8s/</code></pre>
 <p style="text-align:center; color:#888;">&mdash; BONUS SELESAI &mdash;</p>
 </body>
 </html>
+
+<h2>Bonus Features (Lanjutan)</h2>
+
+<h3>Secret Management — SealedSecrets</h3>
+<p>File: <code>sealed-secrets/</code></p>
+<ul>
+  <li><strong>SealedSecret</strong> — Secret terenkripsi yang aman di-commit ke git</li>
+  <li>Hanya SealedSecrets controller di cluster yang bisa mendekripsi</li>
+  <li>Controller otomatis membuat Secret asli dari SealedSecret</li>
+  <li>Tidak ada secret plaintext yang ter-commit</li>
+</ul>
+<pre><code>kubectl apply -f sealed-secrets/task-api-sealed.yaml</code></pre>
+
+<h3>Otomatisasi Update Dependency — Dependabot</h3>
+<p>File: <code>.github/dependabot.yml</code></p>
+<table>
+<tr><th>Ecosystem</th><th>Schedule</th><th>Action</th></tr>
+<tr><td>pip (Python)</td><td>Setiap Senin jam 09:00 WIB</td><td>Auto PR update requirements.txt</td></tr>
+<tr><td>docker</td><td>Setiap Senin jam 09:00 WIB</td><td>Auto PR update base image</td></tr>
+<tr><td>github-actions</td><td>Setiap Senin jam 09:00 WIB</td><td>Auto PR update action versions</td></tr>
+</table>
+
+<p style="text-align:center;">--- SEMUA BONUS SELESAI ---</p>
+</body>
+</html>

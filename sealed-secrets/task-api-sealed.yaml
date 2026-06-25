@@ -1,0 +1,13 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: task-api-secret
+  namespace: task-api
+spec:
+  encryptedData:
+    DB_PASSWORD: AgBy3i4E5fG7hIjKlMnOpQrStUvWxYz123456789AbCdEfGhIjKlMnOpQrStUvWxYz123456789AbCdEfGhIjKlMnOpQrStUvWxYz123456789AbCdEfGhIjKlMnOpQrStUvWxYz123456789AbCdEfGhIjKlMnOpQrStUvWxYz123456789AbCdEfGhIjKlMnOpQrStUvWxYz123456789==
+  template:
+    metadata:
+      name: task-api-secret
+      namespace: task-api
+    type: Opaque
