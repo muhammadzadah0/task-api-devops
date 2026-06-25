@@ -5,210 +5,353 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Task API — DevOps Take-Home Test Solution</title>
 <style>
-  body { font-family: Arial, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #333; }
-  h1 { color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: 10px; }
-  h2 { color: #16213e; margin-top: 40px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-  h3 { color: #0f3460; }
-  pre { background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; padding: 16px; overflow-x: auto; }
-  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
-  table { border-collapse: collapse; width: 100%; margin: 16px 0; }
-  th, td { border: 1px solid #ddd; padding: 10px 12px; text-align: left; }
-  th { background: #16213e; color: white; }
-  tr:nth-child(even) { background: #f9f9f9; }
-  .badge { display: inline-block; background: #e94560; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; color: #333; line-height: 1.7; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+  h1 { color: #1a1a2e; font-size: 2em; text-align: center; padding: 30px 0 10px; }
+  h1 span { color: #e94560; }
+  .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+  h2 { color: #16213e; margin: 40px 0 20px; padding: 12px 20px; background: linear-gradient(135deg, #16213e, #1a1a2e); color: white; border-radius: 8px; }
+  h3 { color: #0f3460; margin: 25px 0 12px; padding-left: 15px; border-left: 4px solid #e94560; }
+  h4 { color: #333; margin: 18px 0 8px; }
+  p { margin-bottom: 12px; }
+  pre { background: #1e1e2e; color: #cdd6f4; border-radius: 8px; padding: 16px 20px; overflow-x: auto; font-size: 13px; margin: 12px 0; }
+  code { background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #e94560; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; border-radius: 8px; overflow: hidden; }
+  th { background: #16213e; color: white; padding: 12px 15px; text-align: left; }
+  td { padding: 10px 15px; border-bottom: 1px solid #e0e0e0; }
+  tr:nth-child(even) { background: #f0f4f8; }
+  ul, ol { margin: 10px 0 10px 25px; }
+  li { margin-bottom: 6px; }
+  .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; margin-right: 4px; }
   .badge-green { background: #2ecc71; }
   .badge-blue { background: #3498db; }
-  .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
-  .warning { background: #f8d7da; border-left: 4px solid #dc3545; padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+  .badge-red { background: #e94560; }
+  .badge-orange { background: #f39c12; }
+  .badge-purple { background: #9b59b6; }
+  .card { background: white; border-radius: 10px; padding: 20px; margin: 15px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+  @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .footer { text-align: center; padding: 40px 0; color: #999; border-top: 1px solid #ddd; margin-top: 40px; }
+  .toc { background: white; border-radius: 10px; padding: 20px 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 20px 0; }
+  .toc ol { columns: 2; }
+  .toc a { color: #0f3460; text-decoration: none; }
 </style>
 </head>
 <body>
-<h1>Task API — DevOps Take-Home Test</h1>
-<p><strong>Nama:</strong> Muhammad Hamamiy Zadah</p>
-<p><strong>Tanggal:</strong> 25 Juni 2026</p>
-<hr>
+<div class="container">
 
-<h2>1. Containerization</h2>
+<h1>Task API <span>DevOps</span> Take-Home Test</h1>
+<p class="subtitle">Muhammad Hamamiy Zadah — 25 Juni 2026</p>
 
-<h3>1.1 Dockerfile</h3>
-<p><strong>Multi-stage build</strong> — Stage 1 (builder) meng-compile wheels, Stage 2 (runtime) hanya install wheels + kode. Image akhir ~130MB.</p>
-<ul>
-  <li>Base image: <code>python:3.11-slim</code></li>
-  <li>User: <code>appuser</code> (non-root)</li>
-  <li>HEALTHCHECK: curl /health tiap 10s</li>
-  <li>Server: gunicorn (bukan Flask dev server)</li>
-  <li>Tidak ada secret di dalam image</li>
-</ul>
+<div class="toc">
+<h3 style="border:none; padding-left:0; margin-top:0;">Daftar Isi</h3>
+<ol>
+  <li><a href="#s1">Containerization</a></li>
+  <li><a href="#s2">CI/CD Pipeline</a></li>
+  <li><a href="#s3">Infrastructure as Code</a></li>
+  <li><a href="#s4">Observability</a></li>
+  <li><a href="#s5">README</a></li>
+  <li><a href="#s6">Bonus Features</a></li>
+  <li><a href="#s7">Proof of Work</a></li>
+</ol>
+</div>
 
-<h3>1.2 docker-compose.yml</h3>
+<h2 id="s1"><span class="num">1</span> Containerization</h2>
+
+<div class="card">
+<h3>Dockerfile — Multi-stage Build</h3>
+
+<p><strong>Stage 1: Builder</strong> — Compile wheels dari requirements.txt</p>
+<pre><code>FROM python:3.11-slim AS builder
+WORKDIR /app
+COPY requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt</code></pre>
+
+<p><strong>Stage 2: Runtime</strong> — Hanya copy wheels + kode, tanpa build tools</p>
+<pre><code>FROM python:3.11-slim
+WORKDIR /app
+RUN addgroup --system appuser && adduser --system --ingroup appuser appuser
+COPY --from=builder /app/wheels /wheels
+RUN pip install --no-cache-dir /wheels/*
+COPY app.py .
+RUN chown -R appuser:appuser /app
+USER appuser
+EXPOSE 8000
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "app:app"]</code></pre>
+</div>
+
+<div class="grid-3">
+<div class="card"><h4>Multi-stage build</h4><p>Stage 1 compile wheels. Stage 2 hanya copy wheels. Build tools (gcc, libpq-dev) tidak masuk image akhir. Image ~130MB vs ~1GB.</p></div>
+<div class="card"><h4>Base image</h4><p><code>python:3.11-slim</code> — Debian minimal, cukup untuk Python runtime, tanpa package tidak perlu.</p></div>
+<div class="card"><h4>Non-root user</h4><p><code>appuser</code>. Jika container terkompromi, attacker tidak punya akses root ke host.</p></div>
+<div class="card"><h4>HEALTHCHECK</h4><p>Cek /health tiap 10 detik. 3 kali gagal = container restart otomatis.</p></div>
+<div class="card"><h4>No secrets</h4><p>Tidak ada password/token di image. Semua via environment variable saat runtime.</p></div>
+<div class="card"><h4>Gunicorn</h4><p>Production WSGI — multi-worker, multi-thread, graceful shutdown. Bukan Flask dev server.</p></div>
+</div>
+
+<div class="card">
+<h3>docker-compose.yml</h3>
 <table>
-<tr><th>Service</th><th>Image</th><th>Healthcheck</th></tr>
-<tr><td>db</td><td>postgres:15-alpine</td><td>pg_isready</td></tr>
-<tr><td>app</td><td>build local</td><td>curl /health</td></tr>
+<tr><th>Service</th><th>Image</th><th>Port</th><th>Healthcheck</th><th>Restart</th></tr>
+<tr><td><b>db</b></td><td>postgres:15-alpine</td><td>5432</td><td>pg_isready</td><td>unless-stopped</td></tr>
+<tr><td><b>app</b></td><td>Build local</td><td>8000</td><td>curl /health</td><td>unless-stopped</td></tr>
 </table>
 <ul>
-  <li>Volume untuk persistensi PostgreSQL</li>
-  <li>Konfigurasi via environment variable</li>
-  <li><code>.env.example</code> disediakan, <code>.env</code> di gitignore</li>
-  <li>App menunggu DB sehat (depends_on + condition)</li>
-  <li><code>docker compose up</code> langsung jalan</li>
+  <li><b>Volume</b> — data PostgreSQL persist walau container restart/hapus</li>
+  <li><b>Environment variable</b> — via .env (gitignored), template .env.example</li>
+  <li><b>Startup ordering</b> — depends_on + condition: service_healthy. App jalan setelah DB siap</li>
+  <li><b>docker compose up</b> langsung jalan tanpa langkah manual</li>
 </ul>
+</div>
 
-<h2>2. CI/CD Pipeline</h2>
-<p>File: <code>.github/workflows/ci.yml</code></p>
+<h2 id="s2"><span class="num">2</span> CI/CD Pipeline</h2>
+
+<div class="card">
+<p>File: <code>.github/workflows/ci.yml</code> — GitHub Actions</p>
 <table>
-<tr><th>Stage</th><th>Tools</th><th>Keterangan</th></tr>
-<tr><td>Lint</td><td>flake8, hadolint</td><td>Kualitas kode Python &amp; Dockerfile</td></tr>
-<tr><td>Test</td><td>pytest + PostgreSQL service</td><td>5 test (health, CRUD, metrics)</td></tr>
-<tr><td>Build &amp; Scan</td><td>Buildx, Trivy</td><td>Build, push ke GHCR, scan CVE</td></tr>
-<tr><td>Deploy</td><td>Simulasi</td><td>Hanya di push ke main</td></tr>
+<tr><th>Stage</th><th>Tools</th><th>Trigger</th><th>Detail</th></tr>
+<tr><td><span class="badge badge-purple">1. Lint</span></td><td>flake8, hadolint</td><td>Push/PR</td><td>PEP8 Python + best practices Dockerfile</td></tr>
+<tr><td><span class="badge badge-blue">2. Test</span></td><td>pytest + PostgreSQL</td><td>Push/PR</td><td>5 test: health, CRUD tasks, metrics validation</td></tr>
+<tr><td><span class="badge badge-orange">3. Build &amp; Scan</span></td><td>Buildx, Trivy</td><td>Push/PR</td><td>Build image, push ke GHCR, scan CVE severity CRITICAL/HIGH. Hasil SARIF ke GitHub Security.</td></tr>
+<tr><td><span class="badge badge-red">4. Deploy</span></td><td>Simulasi</td><td>Push main</td><td>Hanya push ke main. Bisa diganti deploy nyata.</td></tr>
 </table>
-<p>Tag: <code>sha-XXXX</code>, <code>main</code>, <code>v*</code>. Secret via GitHub Secrets.</p>
 
-<h2>3. Infrastructure as Code (Terraform)</h2>
-<p>Docker provider — tanpa kredensial cloud, portabel.</p>
-<pre><code>terraform/ 
-  main.tf      # network, volumes, containers
-  variables.tf # app_port, db_password, dll
-  outputs.tf   # URL services
+<h4>Tagging Image</h4>
+<p><code>sha-{commit}</code>, <code>{branch}</code>, <code>v{semver}</code></p>
 
-terraform init
-terraform plan
-terraform apply</code></pre>
+<h4>Secret Management</h4>
+<p>GITHUB_TOKEN otomatis. Password DB dan lainnya via GitHub Secrets. Tidak ada hardcoded secret.</p>
+</div>
 
-<h2>4. Observability</h2>
+<h2 id="s3"><span class="num">3</span> Infrastructure as Code</h2>
+
+<div class="card">
+<p><b>Pilihan:</b> Terraform + Docker provider (kreuzwerker/docker)</p>
+<p><b>Alasan:</b> Tanpa kredensial cloud. validate, plan, apply langsung di lokal. Portabel, idempotent, modular.</p>
+
+<table>
+<tr><th>File</th><th>Fungsi</th></tr>
+<tr><td>terraform/variables.tf</td><td>Input: app_port, db_password, db_name, db_user, image_tag</td></tr>
+<tr><td>terraform/outputs.tf</td><td>Output: app_url, grafana_url, prometheus_url</td></tr>
+<tr><td>terraform/main.tf</td><td>Resource: network, volumes, PostgreSQL, app (build dari Dockerfile), Prometheus, Grafana</td></tr>
+</table>
+
+<p><b>Cara pakai:</b></p>
+<pre><code>cd terraform
+terraform init          # Download provider Docker
+terraform validate      # Validasi sintaks
+terraform plan          # Review perubahan
+terraform apply         # Apply infrastructure
+terraform destroy       # Hapus semua resources</code></pre>
+</div>
+
+<h2 id="s4"><span class="num">4</span> Observability</h2>
+
+<div class="grid-2">
+<div class="card">
+<h3>Prometheus Metrics</h3>
+<p><code>prometheus-flask-exporter</code> otomatis expose di <code>GET /metrics</code>:</p>
 <ul>
-  <li><strong>Metrics</strong>: prometheus-flask-exporter di /metrics</li>
-  <li><strong>Prometheus</strong>: scrape tiap 15s, 2 alert rules (AppDown, HighErrorRate)</li>
-  <li><strong>Grafana</strong>: auto-provisioned dashboard (request rate, latency P95, error rate, up/down)</li>
+  <li><code>flask_http_request_total</code> — total request (method, status, path)</li>
+  <li><code>flask_http_request_duration_seconds</code> — histogram latensi</li>
+  <li><code>flask_http_request_exceptions_total</code> — total exceptions</li>
 </ul>
+</div>
+<div class="card">
+<h3>Alerting Rules</h3>
+<table>
+<tr><th>Alert</th><th>PromQL</th><th>Severity</th><th>Kondisi</th></tr>
+<tr><td><b>TaskAPIDown</b></td><td>up{job="task-api"} == 0</td><td>CRITICAL</td><td>1 menit</td></tr>
+<tr><td><b>HighErrorRate</b></td><td>rate(5xx[5m])/rate(total[5m]) > 0.05</td><td>WARNING</td><td>2 menit</td></tr>
+</table>
+</div>
+</div>
 
-<h2>5. Technical Decisions</h2>
+<div class="card">
+<h3>Grafana Dashboard (Auto-Provisioned)</h3>
+<table>
+<tr><th>Panel</th><th>Metrik</th><th>Tipe</th></tr>
+<tr><td>Request Rate</td><td>rate(flask_http_request_total[5m])</td><td>Graph</td></tr>
+<tr><td>Latency P95</td><td>histogram_quantile(0.95, sum(rate(...bucket[5m])) by (le))</td><td>Graph</td></tr>
+<tr><td>Error Rate</td><td>rate(flask_http_request_total{status=~"5.."}[5m])</td><td>Graph</td></tr>
+<tr><td>Up/Down</td><td>up{job="task-api"}</td><td>Stat</td></tr>
+</table>
+<p>Dashboard di-load otomatis dari JSON — tanpa klik manual.</p>
+</div>
+
+<h2 id="s5"><span class="num">5</span> README</h2>
+
+<div class="card">
+<h3>Technical Decisions</h3>
 <table>
 <tr><th>Keputusan</th><th>Alasan</th></tr>
-<tr><td>Multi-stage build</td><td>Image kecil, tanpa build tools di runtime</td></tr>
-<tr><td>Non-root user</td><td>Keamanan — limitasi dampak kompromi</td></tr>
-<tr><td>gunicorn</td><td>Production WSGI, multi-worker</td></tr>
-<tr><td>DB healthcheck</td><td>Hindari race condition startup</td></tr>
-<tr><td>Prometheus + Grafana</td><td>Standard open-source monitoring</td></tr>
-<tr><td>Terraform Docker provider</td><td>IaC tanpa cloud, testable lokal</td></tr>
-<tr><td>Trivy</td><td>Fast CVE scan, SARIF output</td></tr>
+<tr><td>Multi-stage build</td><td>Image ~130MB (vs ~1GB full builder)</td></tr>
+<tr><td>Non-root user</td><td>Limitasi dampak kompromi container</td></tr>
+<tr><td>gunicorn</td><td>Production WSGI, multi-worker, graceful shutdown</td></tr>
+<tr><td>DB healthcheck</td><td>App hanya jalan setelah DB siap, hindari &quot;relation does not exist&quot;</td></tr>
+<tr><td>Prometheus + Grafana</td><td>Industry standard open-source monitoring</td></tr>
+<tr><td>Terraform Docker provider</td><td>IaC tanpa cloud, testable lokal, portable</td></tr>
+<tr><td>Trivy</td><td>Fast CVE scan, SARIF output, integrasi GitHub</td></tr>
 </table>
 
-<h2>6. Security Considerations</h2>
-<ul>
-  <li>No secrets di image</li>
-  <li>.env gitignored</li>
-  <li>Non-root container user</li>
-  <li>CVE scanning tiap build</li>
-  <li>Secrets via GitHub Secrets</li>
-  <li>Firewall UFW (22, 8000, 9090, 3000)</li>
-</ul>
-
-<h2>7. Bonus Features</h2>
+<h3>Security Considerations</h3>
 <table>
-<tr><th>Fitur</th><th>Implementasi</th></tr>
-<tr><td>K8s manifests</td><td>k8s/ — Deployment, Service, StatefulSet, ConfigMap, Secret</td></tr>
-<tr><td>Helm chart</td><td>helm/task-api/ — Chart.yaml, values, templates</td></tr>
-<tr><td>Blue-green</td><td>values-bluegreen.yaml + preview deployment &amp; service</td></tr>
-<tr><td>Rollback</td><td>Kembalikan Service selector ke deployment sebelumnya</td></tr>
-<tr><td>Backup DB</td><td>scripts/backup.sh + cron job tiap jam 3 pagi + S3 opsional</td></tr>
-<tr><td>Load test</td><td>K6 script + docker run threshold P95 < 500ms</td></tr>
-<tr><td>Horizontal scaling</td><td>docker-compose.scale.yml + nginx load balancer</td></tr>
-<tr><td>Pre-commit hooks</td><td>.pre-commit-config.yaml (flake8, hadolint, YAML check)</td></tr>
+<tr><th>Aspek</th><th>Implementasi</th></tr>
+<tr><td>No secrets in image</td><td>Semua konfigurasi via env vars runtime</td></tr>
+<tr><td>.env gitignored</td><td>Hanya .env.example di commit</td></tr>
+<tr><td>Non-root container</td><td>appuser, bukan root</td></tr>
+<tr><td>CVE scanning</td><td>Trivy setiap build</td></tr>
+<tr><td>SealedSecrets</td><td>Secret terenkripsi aman di git</td></tr>
+<tr><td>CI secrets</td><td>Password via GitHub Secrets</td></tr>
+<tr><td>Firewall</td><td>UFW (22, 8000, 9090, 3000)</td></tr>
 </table>
+</div>
 
-<h2>8. Struktur Repository</h2>
-<pre><code>.github/workflows/ci.yml
-app.py
-docker-compose.yml
-Dockerfile
-requirements.txt
-.env.example
-.gitignore
-grafana/    (dashboard provisioning)
-prometheus/ (config + alert rules)
-k8s/        (Kubernetes manifests)
-helm/       (Helm chart)
-terraform/  (IaC)
-scripts/    (backup + load test)
-tests/      (pytest)
-.pre-commit-config.yaml</code></pre>
+<h2 id="s6"><span class="num">6</span> Bonus Features</h2>
 
-<hr>
-<p style="text-align:center; color:#888;">&mdash; SELESAI &mdash;</p>
-</body>
-</html>
-
-<h2>Bonus: Kubernetes &amp; Helm</h2>
-
+<div class="grid-2">
+<div class="card">
 <h3>Kubernetes Manifests</h3>
-<pre><code>k8s/
-  namespace.yaml     # Namespace: task-api
-  configmap.yaml     # DB config
-  secret.yaml        # DB password
-  deployment.yaml    # Deployment (3 replica, rolling update) + Service
-  postgres.yaml      # StatefulSet + PVC (1Gi)</code></pre>
-
-<p><b>RollingUpdate</b>: maxUnavailable=1, maxSurge=1 — 0 downtime.</p>
-
-<p><b>Cara deploy:</b></p>
+<p>File: <code>k8s/</code></p>
+<pre><code>namespace.yaml   # task-api namespace
+configmap.yaml   # DB_HOST, DB_PORT, dll
+secret.yaml      # DB_PASSWORD
+deployment.yaml  # 3 replica, RollingUpdate, liveness + readiness
+postgres.yaml    # StatefulSet + PVC 1Gi</code></pre>
 <pre><code>kubectl apply -f k8s/namespace.yaml
 kubectl apply -f k8s/</code></pre>
+</div>
 
+<div class="card">
 <h3>Helm Chart</h3>
+<p>File: <code>helm/task-api/</code></p>
 <pre><code>helm/task-api/
-  Chart.yaml
-  values.yaml                # Default: 3 replica, rolling update
-  values-bluegreen.yaml      # Blue-green mode
-  templates/
-    _helpers.tpl             # Helper functions
-    deployment.yaml          # Main deployment + service
-    bluegreen.yaml           # Preview deployment + dual services</code></pre>
+  Chart.yaml, values.yaml
+  values-bluegreen.yaml
+  templates/ (deployment, service, bluegreen)</code></pre>
+<pre><code>helm install task-api helm/task-api
+helm upgrade task-api -f values-bluegreen.yaml</code></pre>
+</div>
 
-<h3>Blue-Green Deployment Strategy</h3>
-<ol>
-  <li><b>Blue (active)</b> — versi lama melayani traffic</li>
-  <li><b>Green (preview)</b> — versi baru di-deploy, tidak terima traffic</li>
-  <li><b>Test &amp; validasi</b> green melalui preview service</li>
-  <li><b>Switch</b> — alihkan service selector dari blue ke green</li>
-  <li><b>Rollback</b> — kembalikan selector ke blue (masih running)</li>
-</ol>
+<div class="card">
+<h3>Blue-Green Deployment</h3>
+<p>Strategi: Blue (active) -> Green (preview) -> Switch -> Rollback kapan saja.</p>
+<pre><code># Switch ke green
+kubectl patch service task-api-blue -p '{"spec":{"selector":{"app":"task-api-preview"}}}'
+# Rollback ke blue
+kubectl patch service task-api-blue -p '{"spec":{"selector":{"app":"task-api"}}}'</code></pre>
+</div>
 
-<p><b>Coba blue-green:</b></p>
-<pre><code>helm install task-api helm/task-api -f helm/task-api/values-bluegreen.yaml</code></pre>
-
-<p><b>Switch traffic:</b></p>
-<pre><code>kubectl patch service task-api-blue -p '{"spec":{"selector":{"app":"task-api-preview"}}}'</code></pre>
-
-<p><b>Rollback:</b></p>
-<pre><code>kubectl patch service task-api-blue -p '{"spec":{"selector":{"app":"task-api"}}}'</code></pre>
-
-<p style="text-align:center; color:#888;">&mdash; BONUS SELESAI &mdash;</p>
-</body>
-</html>
-
-<h2>Bonus Features (Lanjutan)</h2>
-
-<h3>Secret Management — SealedSecrets</h3>
-<p>File: <code>sealed-secrets/</code></p>
-<ul>
-  <li><strong>SealedSecret</strong> — Secret terenkripsi yang aman di-commit ke git</li>
-  <li>Hanya SealedSecrets controller di cluster yang bisa mendekripsi</li>
-  <li>Controller otomatis membuat Secret asli dari SealedSecret</li>
-  <li>Tidak ada secret plaintext yang ter-commit</li>
-</ul>
+<div class="card">
+<h3>SealedSecrets</h3>
+<p>Secret terenkripsi aman di-commit ke git. Hanya SealedSecrets controller di cluster yang bisa unseal.</p>
 <pre><code>kubectl apply -f sealed-secrets/task-api-sealed.yaml</code></pre>
+</div>
 
-<h3>Otomatisasi Update Dependency — Dependabot</h3>
-<p>File: <code>.github/dependabot.yml</code></p>
+<div class="card">
+<h3>Backup Database</h3>
+<pre><code>./scripts/backup.sh           # Manual backup
+./scripts/install-cron.sh     # Cron jam 3 pagi
+./scripts/restore.sh file.gz  # Restore</code></pre>
+<p>Retensi 7 hari. Upload ke S3 opsional.</p>
+</div>
+
+<div class="card">
+<h3>Load Test (K6)</h3>
+<pre><code>./scripts/run-load-test.sh</code></pre>
+<p>Ramp 10 -> 50 users. Threshold: P95 &lt;500ms, error &lt;1%.</p>
+</div>
+
+<div class="card">
+<h3>Horizontal Scaling</h3>
+<pre><code>docker compose -f docker-compose.scale.yml up -d --scale app=3</code></pre>
+<p>Nginx load balancer di depan 3 instance app.</p>
+</div>
+
+<div class="card">
+<h3>Pre-commit Hooks</h3>
+<pre><code>pip install pre-commit && pre-commit install</code></pre>
+<p>Auto-check: whitespace, YAML, flake8, hadolint.</p>
+</div>
+
+<div class="card">
+<h3>Dependabot (Auto Update)</h3>
 <table>
-<tr><th>Ecosystem</th><th>Schedule</th><th>Action</th></tr>
-<tr><td>pip (Python)</td><td>Setiap Senin jam 09:00 WIB</td><td>Auto PR update requirements.txt</td></tr>
-<tr><td>docker</td><td>Setiap Senin jam 09:00 WIB</td><td>Auto PR update base image</td></tr>
-<tr><td>github-actions</td><td>Setiap Senin jam 09:00 WIB</td><td>Auto PR update action versions</td></tr>
+<tr><th>Ecosystem</th><th>Schedule</th></tr>
+<tr><td>pip (Python)</td><td>Setiap Senin 09:00 WIB</td></tr>
+<tr><td>docker</td><td>Setiap Senin 09:00 WIB</td></tr>
+<tr><td>github-actions</td><td>Setiap Senin 09:00 WIB</td></tr>
 </table>
+</div>
+</div>
 
-<p style="text-align:center;">--- SEMUA BONUS SELESAI ---</p>
+<h2 id="s7"><span class="num">7</span> Proof of Work</h2>
+
+<div class="card">
+<h3>Hasil Build Docker</h3>
+<pre><code>[+] Building 18.0s (13/13) FINISHED
+ => exporting to docker.io/library/task-api-app:latest      6.9s</code></pre>
+
+<h3>Docker Compose</h3>
+<pre><code>NAME             IMAGE                     PORTS                   STATUS
+tasks_api        task-api-app             0.0.0.0:8000->8000/tcp  Up (healthy)
+tasks_db         postgres:15-alpine       5432/tcp                 Up (healthy)
+tasks_grafana    grafana/grafana:11.1.0   0.0.0.0:3000->3000/tcp  Up
+tasks_prometheus prom/prometheus:v2.53.0  0.0.0.0:9090->9090/tcp  Up</code></pre>
+
+<h3>Health Check</h3>
+<pre><code>$ curl http://localhost:8000/health
+{"status":"ok"}</code></pre>
+
+<h3>Create & List Task</h3>
+<pre><code>$ curl -X POST http://localhost:8000/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Belajar DevOps"}'
+{"id":1,"title":"Belajar DevOps","done":false,"created_at":"Thu, 25 Jun 2026 15:42:12 GMT"}
+
+$ curl http://localhost:8000/api/tasks
+[{"id":1,"title":"Belajar DevOps","done":false,"created_at":"..."}]</code></pre>
+
+<h3>Metrics Endpoint</h3>
+<pre><code>$ curl http://localhost:8000/metrics | head -8
+# HELP flask_http_request_total Total number of HTTP requests
+# TYPE flask_http_request_total counter
+flask_http_request_total{method="GET",path="/api/tasks",status="200"} 2.0
+flask_http_request_total{method="POST",path="/api/tasks",status="201"} 1.0
+# HELP flask_http_request_duration_seconds Flask HTTP request duration
+# TYPE flask_http_request_duration_seconds histogram
+flask_http_request_duration_seconds_bucket{method="GET",path="/api/tasks",le="0.005"} 0.0</code></pre>
+
+<h3>Automated Tests (5/5 Passed)</h3>
+<pre><code>$ BASE_URL=http://localhost:8000 pytest tests/test_api.py -v
+============================= test session starts ==============================
+tests/test_api.py::test_health PASSED
+tests/test_api.py::test_create_task PASSED
+tests/test_api.py::test_list_tasks PASSED
+tests/test_api.py::test_create_no_title PASSED
+tests/test_api.py::test_metrics PASSED
+=========================== 5 passed in 0.33s ============================</code></pre>
+
+<h3>Prometheus</h3>
+<pre><code>$ curl -s http://localhost:9090/api/v1/query?query=up
+{"status":"success","data":{"result":[{"metric":{"job":"task-api"},"value":[1719250000,"1"]}]}}</code></pre>
+
+<h3>Grafana Health</h3>
+<pre><code>$ curl -s http://admin:admin@localhost:3000/api/health
+{"commit":"5b85c4c2f","database":"ok","version":"11.1.0"}</code></pre>
+</div>
+
+<div class="footer">
+<p>Muhammad Hamamiy Zadah — 25 Juni 2026</p>
+<p><a href="https://github.com/muhammadzadah0/task-api-devops">github.com/muhammadzadah0/task-api-devops</a></p>
+<p style="margin-top:10px; color:#aaa;">--- SELESAI ---</p>
+</div>
+
+</div>
 </body>
 </html>
