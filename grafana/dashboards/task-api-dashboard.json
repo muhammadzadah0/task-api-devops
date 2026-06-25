@@ -1,0 +1,52 @@
+{
+  "title": "Task API Dashboard",
+  "uid": "task-api",
+  "version": 1,
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "Request Rate",
+      "type": "graph",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "rate(flask_http_request_total{job=\"task-api\"}[5m])",
+          "legendFormat": "rate"
+        }
+      ]
+    },
+    {
+      "title": "Request Latency (P95)",
+      "type": "graph",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket{job=\"task-api\"}[5m])) by (le))",
+          "legendFormat": "p95"
+        }
+      ]
+    },
+    {
+      "title": "Error Rate",
+      "type": "graph",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "rate(flask_http_request_total{job=\"task-api\", status=~\"5..\"}[5m])",
+          "legendFormat": "5xx errors"
+        }
+      ]
+    },
+    {
+      "title": "Application Up/Down",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "up{job=\"task-api\"}",
+          "legendFormat": "up"
+        }
+      ]
+    }
+  ]
+}

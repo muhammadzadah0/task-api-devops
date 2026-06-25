@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task API — DevOps Take-Home Test Solution</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #333; }
+  h1 { color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #16213e; margin-top: 40px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+  h3 { color: #0f3460; }
+  pre { background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; padding: 16px; overflow-x: auto; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+  th, td { border: 1px solid #ddd; padding: 10px 12px; text-align: left; }
+  th { background: #16213e; color: white; }
+  tr:nth-child(even) { background: #f9f9f9; }
+  .badge { display: inline-block; background: #e94560; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+  .badge-green { background: #2ecc71; }
+  .badge-blue { background: #3498db; }
+  .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+  .warning { background: #f8d7da; border-left: 4px solid #dc3545; padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>Task API — DevOps Take-Home Test</h1>
+<p><strong>Nama:</strong> Muhammad Hamamiy Zadah</p>
+<p><strong>Tanggal:</strong> 25 Juni 2026</p>
+<hr>
+
+<h2>1. Containerization</h2>
+
+<h3>1.1 Dockerfile</h3>
+<p><strong>Multi-stage build</strong> — Stage 1 (builder) meng-compile wheels, Stage 2 (runtime) hanya install wheels + kode. Image akhir ~130MB.</p>
+<ul>
+  <li>Base image: <code>python:3.11-slim</code></li>
+  <li>User: <code>appuser</code> (non-root)</li>
+  <li>HEALTHCHECK: curl /health tiap 10s</li>
+  <li>Server: gunicorn (bukan Flask dev server)</li>
+  <li>Tidak ada secret di dalam image</li>
+</ul>
+
+<h3>1.2 docker-compose.yml</h3>
+<table>
+<tr><th>Service</th><th>Image</th><th>Healthcheck</th></tr>
+<tr><td>db</td><td>postgres:15-alpine</td><td>pg_isready</td></tr>
+<tr><td>app</td><td>build local</td><td>curl /health</td></tr>
+</table>
+<ul>
+  <li>Volume untuk persistensi PostgreSQL</li>
+  <li>Konfigurasi via environment variable</li>
+  <li><code>.env.example</code> disediakan, <code>.env</code> di gitignore</li>
+  <li>App menunggu DB sehat (depends_on + condition)</li>
+  <li><code>docker compose up</code> langsung jalan</li>
+</ul>
+
+<h2>2. CI/CD Pipeline</h2>
+<p>File: <code>.github/workflows/ci.yml</code></p>
+<table>
+<tr><th>Stage</th><th>Tools</th><th>Keterangan</th></tr>
+<tr><td>Lint</td><td>flake8, hadolint</td><td>Kualitas kode Python &amp; Dockerfile</td></tr>
+<tr><td>Test</td><td>pytest + PostgreSQL service</td><td>5 test (health, CRUD, metrics)</td></tr>
+<tr><td>Build &amp; Scan</td><td>Buildx, Trivy</td><td>Build, push ke GHCR, scan CVE</td></tr>
+<tr><td>Deploy</td><td>Simulasi</td><td>Hanya di push ke main</td></tr>
+</table>
+<p>Tag: <code>sha-XXXX</code>, <code>main</code>, <code>v*</code>. Secret via GitHub Secrets.</p>
+
+<h2>3. Infrastructure as Code (Terraform)</h2>
+<p>Docker provider — tanpa kredensial cloud, portabel.</p>
+<pre><code>terraform/ 
+  main.tf      # network, volumes, containers
+  variables.tf # app_port, db_password, dll
+  outputs.tf   # URL services
+
+terraform init
+terraform plan
+terraform apply</code></pre>
+
+<h2>4. Observability</h2>
+<ul>
+  <li><strong>Metrics</strong>: prometheus-flask-exporter di /metrics</li>
+  <li><strong>Prometheus</strong>: scrape tiap 15s, 2 alert rules (AppDown, HighErrorRate)</li>
+  <li><strong>Grafana</strong>: auto-provisioned dashboard (request rate, latency P95, error rate, up/down)</li>
+</ul>
+
+<h2>5. Technical Decisions</h2>
+<table>
+<tr><th>Keputusan</th><th>Alasan</th></tr>
+<tr><td>Multi-stage build</td><td>Image kecil, tanpa build tools di runtime</td></tr>
+<tr><td>Non-root user</td><td>Keamanan — limitasi dampak kompromi</td></tr>
+<tr><td>gunicorn</td><td>Production WSGI, multi-worker</td></tr>
+<tr><td>DB healthcheck</td><td>Hindari race condition startup</td></tr>
+<tr><td>Prometheus + Grafana</td><td>Standard open-source monitoring</td></tr>
+<tr><td>Terraform Docker provider</td><td>IaC tanpa cloud, testable lokal</td></tr>
+<tr><td>Trivy</td><td>Fast CVE scan, SARIF output</td></tr>
+</table>
+
+<h2>6. Security Considerations</h2>
+<ul>
+  <li>No secrets di image</li>
+  <li>.env gitignored</li>
+  <li>Non-root container user</li>
+  <li>CVE scanning tiap build</li>
+  <li>Secrets via GitHub Secrets</li>
+  <li>Firewall UFW (22, 8000, 9090, 3000)</li>
+</ul>
+
+<h2>7. Bonus Features</h2>
+<table>
+<tr><th>Fitur</th><th>Implementasi</th></tr>
+<tr><td>K8s manifests</td><td>k8s/ — Deployment, Service, StatefulSet, ConfigMap, Secret</td></tr>
+<tr><td>Helm chart</td><td>helm/task-api/ — Chart.yaml, values, templates</td></tr>
+<tr><td>Blue-green</td><td>values-bluegreen.yaml + preview deployment &amp; service</td></tr>
+<tr><td>Rollback</td><td>Kembalikan Service selector ke deployment sebelumnya</td></tr>
+<tr><td>Backup DB</td><td>scripts/backup.sh + cron job tiap jam 3 pagi + S3 opsional</td></tr>
+<tr><td>Load test</td><td>K6 script + docker run threshold P95 < 500ms</td></tr>
+<tr><td>Horizontal scaling</td><td>docker-compose.scale.yml + nginx load balancer</td></tr>
+<tr><td>Pre-commit hooks</td><td>.pre-commit-config.yaml (flake8, hadolint, YAML check)</td></tr>
+</table>
+
+<h2>8. Struktur Repository</h2>
+<pre><code>.github/workflows/ci.yml
+app.py
+docker-compose.yml
+Dockerfile
+requirements.txt
+.env.example
+.gitignore
+grafana/    (dashboard provisioning)
+prometheus/ (config + alert rules)
+k8s/        (Kubernetes manifests)
+helm/       (Helm chart)
+terraform/  (IaC)
+scripts/    (backup + load test)
+tests/      (pytest)
+.pre-commit-config.yaml</code></pre>
+
+<hr>
+<p style="text-align:center; color:#888;">&mdash; SELESAI &mdash;</p>
+</body>
+</html>
