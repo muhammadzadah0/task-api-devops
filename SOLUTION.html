@@ -139,3 +139,51 @@ tests/      (pytest)
 <p style="text-align:center; color:#888;">&mdash; SELESAI &mdash;</p>
 </body>
 </html>
+
+<h2>Bonus: Kubernetes &amp; Helm</h2>
+
+<h3>Kubernetes Manifests</h3>
+<pre><code>k8s/
+  namespace.yaml     # Namespace: task-api
+  configmap.yaml     # DB config
+  secret.yaml        # DB password
+  deployment.yaml    # Deployment (3 replica, rolling update) + Service
+  postgres.yaml      # StatefulSet + PVC (1Gi)</code></pre>
+
+<p><b>RollingUpdate</b>: maxUnavailable=1, maxSurge=1 — 0 downtime.</p>
+
+<p><b>Cara deploy:</b></p>
+<pre><code>kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/</code></pre>
+
+<h3>Helm Chart</h3>
+<pre><code>helm/task-api/
+  Chart.yaml
+  values.yaml                # Default: 3 replica, rolling update
+  values-bluegreen.yaml      # Blue-green mode
+  templates/
+    _helpers.tpl             # Helper functions
+    deployment.yaml          # Main deployment + service
+    bluegreen.yaml           # Preview deployment + dual services</code></pre>
+
+<h3>Blue-Green Deployment Strategy</h3>
+<ol>
+  <li><b>Blue (active)</b> — versi lama melayani traffic</li>
+  <li><b>Green (preview)</b> — versi baru di-deploy, tidak terima traffic</li>
+  <li><b>Test &amp; validasi</b> green melalui preview service</li>
+  <li><b>Switch</b> — alihkan service selector dari blue ke green</li>
+  <li><b>Rollback</b> — kembalikan selector ke blue (masih running)</li>
+</ol>
+
+<p><b>Coba blue-green:</b></p>
+<pre><code>helm install task-api helm/task-api -f helm/task-api/values-bluegreen.yaml</code></pre>
+
+<p><b>Switch traffic:</b></p>
+<pre><code>kubectl patch service task-api-blue -p '{"spec":{"selector":{"app":"task-api-preview"}}}'</code></pre>
+
+<p><b>Rollback:</b></p>
+<pre><code>kubectl patch service task-api-blue -p '{"spec":{"selector":{"app":"task-api"}}}'</code></pre>
+
+<p style="text-align:center; color:#888;">&mdash; BONUS SELESAI &mdash;</p>
+</body>
+</html>

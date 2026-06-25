@@ -1,0 +1,20 @@
+replicaCount: 3
+image:
+  repository: ghcr.io/muhammadzadah0/task-api-devops
+  tag: blue
+  pullPolicy: Always
+service:
+  type: ClusterIP
+  port: 8000
+bluegreen:
+  enabled: true
+  activeService: task-api-blue
+  previewService: task-api-green
+  previewTag: blue
+config:
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_NAME: tasksdb
+  DB_USER: appuser
+secret:
+  DB_PASSWORD: changeme

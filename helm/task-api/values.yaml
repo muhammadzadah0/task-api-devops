@@ -1,0 +1,26 @@
+replicaCount: 3
+image:
+  repository: ghcr.io/muhammadzadah0/task-api-devops
+  tag: latest
+  pullPolicy: Always
+service:
+  type: ClusterIP
+  port: 8000
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+postgres:
+  storageSize: 1Gi
+config:
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_NAME: tasksdb
+  DB_USER: appuser
+secret:
+  DB_PASSWORD: changeme
+bluegreen:
+  enabled: false
